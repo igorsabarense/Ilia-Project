@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet  author="igor.sabarense"  id="create-table-empresa">
+        <createTable  tableName="empresa">
+            <column  name="id"  type="bigint" autoIncrement="true">
+                <constraints  nullable="false"  primaryKey="true" unique="true"/>
+            </column>
+
+            <column name="razao_social" type="varchar(50)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+
+            <column name="cnpj" type="char(14)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+
+            <column name="creation_date" type="date" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
+
+            <column name="update_date" type="date"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet  author="igor.sabarense"  id="create-table-funcionario">
+        <createTable  tableName="funcionario">
+            <column  name="id"  type="bigint" autoIncrement="true">
+                <constraints  nullable="false"  primaryKey="true" unique="true"/>
+            </column>
+
+            <column name="nome" type="varchar(100)">
+                <constraints  nullable="false"/>
+            </column>
+
+            <column name="email" type="varchar(100)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+
+            <column name="cpf" type="char(11)">
+                <constraints  nullable="false" unique="true"/>
+            </column>
+
+            <column name="creation_date" type="date" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
+
+            <column name="update_date" type="date"/>
+
+            <column  name="empresa_id"  type="bigint" >
+                <constraints  nullable="false"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="funcionario" baseColumnNames="empresa_id"
+                                 constraintName="fk-funcionario_empresa_id"
+                                 referencedTableName="empresa"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet  author="igor.sabarense"  id="create-table-lancamento">
+        <createTable  tableName="lancamento">
+            <column  name="id"  type="bigint" autoIncrement="true">
+                <constraints  nullable="false"  primaryKey="true" unique="true"/>
+            </column>
+
+            <column name="descricao" type="varchar(144)"/>
+
+            <column name="localizacao" type="varchar(100)"/>
+
+            <column name="creation_date" type="datetime2(0)" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints  nullable="false"/>
+            </column>
+
+            <column  name="funcionario_id"  type="bigint" >
+                <constraints  nullable="false"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="lancamento" baseColumnNames="funcionario_id"
+                                 constraintName="fk-lancamento_funcionario_id"
+                                 referencedTableName="funcionario"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="insert-empresa-e-funcionario" author="igor.sabarense">
+        <sql>
+            INSERT INTO public.empresa
+            (id, razao_social, cnpj, creation_date, update_date)
+            VALUES(1, 'Ilia', '11744790000136', '2021-07-30', NULL);
+
+            INSERT INTO public.funcionario
+            (id, nome, email, cpf, creation_date, update_date, empresa_id)
+            VALUES(1, 'Igor Sabarense', 'igor.sabarense@ilia.com.br', '81438585616', '2021-07-30', NULL, 1);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
